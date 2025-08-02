@@ -1,5 +1,5 @@
 'use client';
-
+import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 import {
   User,
@@ -31,9 +31,17 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, user => {
+    const unsubscribe = onAuthStateChanged(auth, async user => {
+      if (user) {
+        const token = await user.getIdToken();
+        document.cookie = `auth-token=${token}; path=/; max-age=3600; secure samesite=strict`;
+      } else {
+        document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+      }
+
       setUser(user);
       setLoading(false);
     });
@@ -50,7 +58,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = async () => {
-    await signOut(auth);
+    try {
+      document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+      await signOut(auth);
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout error: ', error);
+    }
   };
 
   const value = {
