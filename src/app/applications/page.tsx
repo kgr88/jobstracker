@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useApplications } from '@/hooks/useApplications';
 import AddApplication from '@/components/AddApplication';
 import { formatDate } from '@/lib/utils';
+import {Button} from '@heroui/button'; 
 
 export default function Applications() {
   const { applications, loading, error, refetch } = useApplications();
@@ -22,11 +23,11 @@ export default function Applications() {
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold">Job Applications</h1>
             <div className="flex items-center gap-4">
-              <button
+              <Button
                 onClick={() => setShowAddApplication(true)}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                >
                 + Add Application
-              </button>
+              </Button>
             </div>
           </div>
         </div>
