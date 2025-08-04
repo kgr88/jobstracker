@@ -11,3 +11,5 @@ export interface Application{
     postingUrl: string;
     notes: string;
 }
+
+export type ApplicationForm = Omit<Application, 'id'| 'userId' | 'dateApplied'>

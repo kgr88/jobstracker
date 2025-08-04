@@ -1,12 +1,10 @@
 'use client';
-import { useAuth } from '@/contexts/AuthContext';
 import { useState } from 'react';
 import { useApplications } from '@/hooks/useApplications';
 import AddApplication from '@/components/AddApplication';
 import { formatDate } from '@/lib/utils';
 
-export default function Dashboard() {
-  const { user, logout } = useAuth();
+export default function Applications() {
   const { applications, loading, error, refetch } = useApplications();
   const [showAddApplication, setShowAddApplication] = useState(false);
 
@@ -16,12 +14,9 @@ export default function Dashboard() {
   if (error) {
     return <div>Error: {error}</div>;
   }
+
   return (
     <div>
-      <div>{user?.email}</div>
-      <button onClick={logout} className="bg-red-600 text-white px-4 py-2 ">
-        Logout
-      </button>
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex justify-between items-center">
@@ -31,9 +26,6 @@ export default function Dashboard() {
                 onClick={() => setShowAddApplication(true)}
                 className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                 + Add Application
-              </button>
-              <button onClick={logout} className="bg-red-600 text-white px-4 py-2 rounded">
-                Logout
               </button>
             </div>
           </div>

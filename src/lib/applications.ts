@@ -1,6 +1,6 @@
 import { db } from '@/lib/firebase';
-import { collection, getDocs, where, query } from 'firebase/firestore';
-import { Application } from '../../types';
+import { collection, getDocs, addDoc, where, query, Timestamp } from 'firebase/firestore';
+import { Application, ApplicationForm } from '../../types';
 
 
 export async function fetchApplications(userId: string){
@@ -15,7 +15,21 @@ export async function fetchApplications(userId: string){
             id: doc.id
         });
     });
-    
+
     return applications;
 }
 
+export async function createApplication(userId: string, data: ApplicationForm){
+    const applicationData = {
+        ...data,
+        userId,
+        dateApplied: Timestamp.now()
+    };
+    
+    const docRef = await addDoc(collection(db, 'applications'), applicationData);
+
+    return{
+        id: docRef.id,
+        ...applicationData
+    }
+}

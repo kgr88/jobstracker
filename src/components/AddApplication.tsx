@@ -1,8 +1,8 @@
 'use client';
 import { useState } from 'react';
-import { addDoc, collection } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 import { useAuth } from '@/contexts/AuthContext';
+import { createApplication } from '@/lib/applications';
+import { ApplicationForm } from '../../types';
 
 interface AddApplicationProps {
   isOpen: boolean;
@@ -11,7 +11,7 @@ interface AddApplicationProps {
 }
 
 export default function AddApplication({ isOpen, onClose, onApplicationAdded }: AddApplicationProps) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ApplicationForm>({
     company: '',
     position: '',
     location: '',
@@ -28,11 +28,7 @@ export default function AddApplication({ isOpen, onClose, onApplicationAdded }: 
 
     setLoading(true);
     try {
-      await addDoc(collection(db, 'applications'), {
-        ...formData,
-        userId: user.uid,
-        dateApplied: new Date(),
-      });
+      await createApplication(user.uid, formData);
       setFormData({
         company: '',
         position: '',
@@ -103,7 +99,7 @@ export default function AddApplication({ isOpen, onClose, onApplicationAdded }: 
             <label className="block text-sm font-medium mb-1">Status</label>
             <select
               value={formData.status}
-              onChange={e => setFormData({ ...formData, status: e.target.value })}
+              onChange={e => setFormData({ ...formData, status: e.target.value as ApplicationForm['status'] })}
               className="w-full p-2 border rounded">
               <option value="Applied">Applied</option>
               <option value="Interview">Interview</option>
