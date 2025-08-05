@@ -1,13 +1,15 @@
 'use client';
-import { useState } from 'react';
 import { useApplications } from '@/hooks/useApplications';
 import AddApplication from '@/components/AddApplication';
 import { formatDate, getHostname } from '@/lib/utils';
 import { Button, Card, CardHeader, CardBody, CardFooter } from '@heroui/react';
+import {
+  useDisclosure,
+} from "@heroui/react";
 
 export default function Applications() {
   const { applications, loading, error, refetch } = useApplications();
-  const [showAddApplication, setShowAddApplication] = useState(false);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   if (loading) {
     return <div>Loading...</div>;
@@ -18,10 +20,11 @@ export default function Applications() {
 
   return (
     <div>
+      
       <div className="flex justify-between items-center py-2">
         <h1 className="text-2xl font-bold">Your job applications</h1>
         <div className="flex items-center gap-4">
-          <Button onPress={() => setShowAddApplication(true)}>+ Add Application</Button>
+          <Button onPress={onOpen}>Open Drawer</Button>
         </div>
       </div>
       <div>
@@ -44,9 +47,7 @@ export default function Applications() {
               </Button>
             </CardHeader>
             <CardBody className="px-3 py-0 text-small text-default-400">
-              <p>
-                {app.notes}
-              </p>
+              <p>{app.notes}</p>
             </CardBody>
             <CardFooter className="gap-3">
               <p className="font-semibold text-default-400 text-small">{formatDate(app.dateApplied)}</p>
@@ -58,11 +59,12 @@ export default function Applications() {
         ))}
       </div>
       <AddApplication
-        isOpen={showAddApplication}
-        onClose={() => setShowAddApplication(false)}
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
         onApplicationAdded={() => {
           refetch(); // Refresh applications list
         }}
+        onClose={onOpenChange}
       />
     </div>
   );
