@@ -3,7 +3,17 @@ import { useState } from 'react';
 import { useApplications } from '@/hooks/useApplications';
 import AddApplication from '@/components/AddApplication';
 import { formatDate } from '@/lib/utils';
-import {Button} from '@heroui/button'; 
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  Table,
+  TableHeader,
+  TableBody,
+  TableColumn,
+  TableRow,
+  TableCell,
+} from '@heroui/react';
 
 export default function Applications() {
   const { applications, loading, error, refetch } = useApplications();
@@ -18,34 +28,46 @@ export default function Applications() {
 
   return (
     <div>
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold">Job Applications</h1>
-            <div className="flex items-center gap-4">
-              <Button
-                onClick={() => setShowAddApplication(true)}
-                >
-                + Add Application
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-      <div>
-        <h2>Applications ({applications.length})</h2>
-        <div className="p-4 bg-gray-900 rounded-md">
-          {applications.map(app => (
-            <div key={app.id} className="bg-gray-400 rounded-sm">
-              <h3>
-                {app.position} at {app.company}
-              </h3>
-              <p>Status: {app.status}</p>
-              <p>Applied: {formatDate(app.dateApplied)}</p>
-            </div>
-          ))}
+      <div className="flex justify-between items-center py-2">
+        <h1 className="text-2xl font-bold">Your job applications</h1>
+        <div className="flex items-center gap-4">
+          <Button onPress={() => setShowAddApplication(true)}>+ Add Application</Button>
         </div>
       </div>
+
+      <div>
+        <Accordion variant="shadow" className="block md:hidden">
+          {applications.map(app => (
+            <AccordionItem
+              key={app.id}
+              aria-label={app.position}
+              subtitle={app.company}
+              title={`${app.position} | ${app.status}`}>
+              <p>Status: {app.status}</p>
+              <p>Applied: {formatDate(app.dateApplied)}</p>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </div>
+
+      <Table className="hidden md:block">
+        <TableHeader>
+        <TableColumn>Position</TableColumn>
+        <TableColumn>Company</TableColumn>
+        <TableColumn>Status</TableColumn>
+        <TableColumn>Applied</TableColumn>
+      </TableHeader>
+      <TableBody>
+        {applications.map(app => (
+          <TableRow key={app.id}>
+            <TableCell>{app.position}</TableCell>
+            <TableCell>{app.company}</TableCell>
+            <TableCell>{app.status}</TableCell>
+            <TableCell>{formatDate(app.dateApplied)}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+      </Table>
       <AddApplication
         isOpen={showAddApplication}
         onClose={() => setShowAddApplication(false)}
