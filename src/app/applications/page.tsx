@@ -2,18 +2,8 @@
 import { useState } from 'react';
 import { useApplications } from '@/hooks/useApplications';
 import AddApplication from '@/components/AddApplication';
-import { formatDate } from '@/lib/utils';
-import {
-  Accordion,
-  AccordionItem,
-  Button,
-  Table,
-  TableHeader,
-  TableBody,
-  TableColumn,
-  TableRow,
-  TableCell,
-} from '@heroui/react';
+import { formatDate, getHostname } from '@/lib/utils';
+import { Button, Card, CardHeader, CardBody, CardFooter } from '@heroui/react';
 
 export default function Applications() {
   const { applications, loading, error, refetch } = useApplications();
@@ -34,40 +24,39 @@ export default function Applications() {
           <Button onPress={() => setShowAddApplication(true)}>+ Add Application</Button>
         </div>
       </div>
-
       <div>
-        <Accordion variant="shadow" className="block md:hidden">
-          {applications.map(app => (
-            <AccordionItem
-              key={app.id}
-              aria-label={app.position}
-              subtitle={app.company}
-              title={`${app.position} | ${app.status}`}>
-              <p>Status: {app.status}</p>
-              <p>Applied: {formatDate(app.dateApplied)}</p>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </div>
-
-      <Table className="hidden md:block">
-        <TableHeader>
-        <TableColumn>Position</TableColumn>
-        <TableColumn>Company</TableColumn>
-        <TableColumn>Status</TableColumn>
-        <TableColumn>Applied</TableColumn>
-      </TableHeader>
-      <TableBody>
         {applications.map(app => (
-          <TableRow key={app.id}>
-            <TableCell>{app.position}</TableCell>
-            <TableCell>{app.company}</TableCell>
-            <TableCell>{app.status}</TableCell>
-            <TableCell>{formatDate(app.dateApplied)}</TableCell>
-          </TableRow>
+          <Card className="my-2" key={app.id}>
+            <CardHeader className="justify-between">
+              <div className="flex gap-5">
+                <div className="flex flex-col gap-1 items-start justify-center">
+                  <h4 className="text-small font-semibold leading-none text-default-600">{app.position}</h4>
+                  <h5 className="text-small tracking-tight text-default-400">{app.company}</h5>
+                </div>
+              </div>
+              <Button
+                className="bg-transparent text-foreground border-default-200"
+                color="primary"
+                radius="full"
+                size="sm"
+                variant="bordered">
+                {app.status}
+              </Button>
+            </CardHeader>
+            <CardBody className="px-3 py-0 text-small text-default-400">
+              <p>
+                {app.notes}
+              </p>
+            </CardBody>
+            <CardFooter className="gap-3">
+              <p className="font-semibold text-default-400 text-small">{formatDate(app.dateApplied)}</p>
+              <a href={app.postingUrl} className="text-default-400 text-small underline">
+                {getHostname(app.postingUrl)}
+              </a>
+            </CardFooter>
+          </Card>
         ))}
-      </TableBody>
-      </Table>
+      </div>
       <AddApplication
         isOpen={showAddApplication}
         onClose={() => setShowAddApplication(false)}
