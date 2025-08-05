@@ -6,11 +6,14 @@ import { Application } from '../../types';
 
 export const useApplications = () => {
   const [applications, setApplications] = useState<Application[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
   const loadApplications = useCallback(async () => {
+    if (authLoading) {
+      return;
+    }
     if (!user) {
       setApplications([]);
       setLoading(false);
@@ -27,7 +30,7 @@ export const useApplications = () => {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, authLoading]);
 
   useEffect(() => {
     loadApplications();
