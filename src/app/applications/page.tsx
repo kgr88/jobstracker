@@ -1,13 +1,19 @@
 'use client';
 import { useApplications } from '@/hooks/useApplications';
 import AddApplication from '@/components/AddApplication';
+import AddInterview from '@/components/AddInterview';
 import { formatDate, getHostname } from '@/lib/utils';
 import { Button, Card, CardHeader, CardBody, CardFooter, Skeleton } from '@heroui/react';
 import { useDisclosure } from '@heroui/react';
 
 export default function Applications() {
   const { applications, loading, error, refetch } = useApplications();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const {
+    isOpen: isOpenApplication,
+    onOpen: onOpenApplication,
+    onOpenChange: onOpenChangeApplication,
+  } = useDisclosure();
+  const { isOpen: isOpenInterview, onOpen: onOpenInterview, onOpenChange: onOpenChangeInterview } = useDisclosure();
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -18,8 +24,11 @@ export default function Applications() {
       <div className="flex justify-between items-center py-2">
         <h1 className="text-2xl font-bold">Your job applications</h1>
         <div className="flex items-center gap-4">
-          <Button onPress={onOpen} isDisabled={loading}>
-            Open Drawer
+          <Button onPress={onOpenInterview} isDisabled={loading}>
+            Add Interview
+          </Button>
+          <Button onPress={onOpenApplication} isDisabled={loading}>
+            Add Application
           </Button>
         </div>
       </div>
@@ -79,12 +88,21 @@ export default function Applications() {
       </div>
 
       <AddApplication
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
+        isOpen={isOpenApplication}
+        onOpenChange={onOpenChangeApplication}
         onApplicationAdded={() => {
           refetch();
         }}
-        onClose={onOpenChange}
+        onClose={onOpenChangeApplication}
+      />
+      <AddInterview
+        applications={applications}
+        isOpen={isOpenInterview}
+        onOpenChange={onOpenChangeInterview}
+        onInterviewAdded={() => {
+          refetch();
+        }}
+        onClose={onOpenChangeInterview}
       />
     </div>
   );

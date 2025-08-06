@@ -1,6 +1,6 @@
 import { db } from '@/lib/firebase';
-import { collection, getDocs, addDoc, where, query, Timestamp } from 'firebase/firestore';
-import { Application, ApplicationForm } from '../../types';
+import { collection, getDocs, addDoc, updateDoc, doc, where, query, Timestamp } from 'firebase/firestore';
+import { Application, ApplicationForm, InterviewForm } from '../../types';
 
 
 export async function fetchApplications(userId: string){
@@ -26,10 +26,19 @@ export async function createApplication(userId: string, data: ApplicationForm){
         dateApplied: Timestamp.now()
     };
     
-    const docRef = await addDoc(collection(db, 'applications'), applicationData);
-
-    return{
-        id: docRef.id,
-        ...applicationData
-    }
+    await addDoc(collection(db, 'applications'), applicationData);
 }
+
+  export async function createInterview(data: InterviewForm){
+    const interviewData = {
+        ...data,
+    };
+    await addDoc(collection(db, 'interviews'), interviewData);
+
+    const applicationsRef = doc(db, 'applications', data.applicationId)
+    await updateDoc(applicationsRef,{
+        status: 'Interview'
+    });
+
+  }
+
