@@ -14,8 +14,9 @@ import {
   Textarea,
   Select,
   SelectItem,
+  Form,
 } from '@heroui/react';
-
+import { Timestamp } from 'firebase/firestore';
 const statusOptions = [
   { key: 'Applied', label: 'Applied' },
   { key: 'Interview', label: 'Interview' },
@@ -32,33 +33,24 @@ interface AddApplicationProps {
 export default function AddApplication({ isOpen, onOpenChange, onApplicationAdded, onClose }: AddApplicationProps) {
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
-
-  const [formData, setFormData] = useState<ApplicationForm>({
-    company: '',
-    position: '',
-    location: '',
-    status: 'Applied',
-    postingUrl: '',
-    notes: '',
-  });
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
-
+    const data = Object.fromEntries(new FormData(e.currentTarget as HTMLFormElement));
     setLoading(true);
+
     try {
-      await createApplication(user.uid, formData);
-
-      setFormData({
-        company: '',
-        position: '',
-        location: '',
-        status: 'Applied',
-        postingUrl: '',
-        notes: '',
-      });
-
+      const applicationData: ApplicationForm = {
+        userId: user.uid,
+        company: data.company as string,
+        position: data.position as string,
+        location: data.location as string,
+        status: data.status as 'Applied' | 'Interview' | 'Offer' | 'Rejected',
+        dateApplied: Timestamp.now(),
+        postingUrl: data.postingUrl as string,
+        notes: data.notes as string,
+      };
+      await createApplication(applicationData);
       onApplicationAdded();
       onClose();
     } catch (error) {
@@ -70,66 +62,33 @@ export default function AddApplication({ isOpen, onOpenChange, onApplicationAdde
 
   return (
     <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
-      <DrawerContent>
+      <DrawerContent className="w-full">
         {onClose => (
-          <form onSubmit={handleSubmit}>
+          <>
             <DrawerHeader>Add Application</DrawerHeader>
             <DrawerBody className="space-y-4">
-              <Input
-                isRequired
-                label="Position"
-                value={formData.position}
-                onValueChange={value => setFormData({ ...formData, position: value })}
-                placeholder="Frontend Developer"
-              />
-              <Input
-                isRequired
-                label="Company"
-                value={formData.company}
-                onValueChange={value => setFormData({ ...formData, company: value })}
-                placeholder="Google, Microsoft"
-              />
-              <Input
-                isRequired
-                label="Location"
-                value={formData.location}
-                onValueChange={value => setFormData({ ...formData, location: value })}
-                placeholder="Remote, New York"
-              />
-              <Select
-                label="Status"
-                selectedKeys={[formData.status]}
-                onSelectionChange={keys => {
-                  const status = Array.from(keys)[0] as ApplicationForm['status'];
-                  setFormData({ ...formData, status });
-                }}>
-                {statusOptions.map(status => (
-                  <SelectItem key={status.key}>{status.label}</SelectItem>
-                ))}
-              </Select>
-              <Input
-                label="Job Posting URL"
-                type="url"
-                value={formData.postingUrl}
-                onValueChange={value => setFormData({ ...formData, postingUrl: value })}
-                placeholder="https://..."
-              />
-              <Textarea
-                label="Notes"
-                value={formData.notes}
-                onValueChange={value => setFormData({ ...formData, notes: value })}
-                placeholder="Additional notes..."
-              />
+              <Form onSubmit={onSubmit} className="w-full">
+                <Input isRequired label="Position" name="position" placeholder="Frontend Developer" type="text" />
+                <Input isRequired label="Company" name="company" placeholder="Google, Microsoft" type="text" />
+                <Input isRequired label="Location" name="location" placeholder="Remote, New York" type="text" />
+                <Select label="Status" name="status" defaultSelectedKeys={['Applied']}>
+                  {statusOptions.map(status => (
+                    <SelectItem key={status.key}>{status.label}</SelectItem>
+                  ))}
+                </Select>
+                <Input label="Job Posting URL" type="url" name="postingUrl" placeholder="https://..." />
+                <Textarea label="Notes" name="notes" placeholder="Additional notes..." />
+                <div className="flex ml-auto">
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Cancel
+                  </Button>
+                  <Button color="primary" type="submit" isLoading={loading}>
+                    Submit
+                  </Button>
+                </div>
+              </Form>
             </DrawerBody>
-            <DrawerFooter>
-              <Button color="danger" variant="light" onPress={onClose}>
-                Cancel
-              </Button>
-              <Button color="primary" type="submit" isLoading={loading}>
-                Add Application
-              </Button>
-            </DrawerFooter>
-          </form>
+          </>
         )}
       </DrawerContent>
     </Drawer>

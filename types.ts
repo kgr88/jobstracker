@@ -12,7 +12,7 @@ export interface Application{
     notes: string;
 }
 
-export type ApplicationForm = Omit<Application, 'id'| 'userId' | 'dateApplied'>
+export type ApplicationForm = Omit<Application, 'id'>
 
 export interface InterviewForm{
     applicationId: string,
