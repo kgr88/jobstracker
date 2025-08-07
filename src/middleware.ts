@@ -8,6 +8,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
+   if (pathname === '/applications' && !authToken) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+
   if ((pathname === '/login' || pathname === '/register') && authToken) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
@@ -16,5 +20,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard', '/login', '/register'],
+  matcher: ['/dashboard', '/login', '/register', '/applications'],
 };
