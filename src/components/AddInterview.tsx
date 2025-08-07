@@ -1,10 +1,9 @@
 'use client';
 import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
   Button,
   Select,
   SelectItem,
@@ -63,46 +62,42 @@ export default function AddInterview({
     }
   };
   return (
-    <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <Form className="w-full max-w-xs" onSubmit={onSubmit}>
-          <ModalContent>
-            {onClose => (
-              <>
-                <ModalHeader className="flex flex-col gap-1">Add Interview</ModalHeader>
-                <ModalBody>
-                  <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
-                    <Select className="max-w-full" label="Select position" name="applicationId">
-                      {applications.map(app => (
-                        <SelectItem key={app.id} textValue={app.position}>
-                          <div className="flex gap-2 items-center">
-                            <div className="flex flex-col">
-                              <span className="text-small">{app.position}</span>
-                              <span className="text-tiny text-default-400">{app.company}</span>
-                            </div>
+      <Drawer isOpen={isOpen} onOpenChange={onOpenChange} >
+        <DrawerContent>
+          {onClose => (
+            <>
+              <DrawerHeader className="flex flex-col gap-1">Add Interview</DrawerHeader>
+              <DrawerBody>
+                <Form className="" onSubmit={onSubmit}>
+                  <Select className="w-full" label="Select position" name="applicationId" isRequired>
+                    {applications.map(app => (
+                      <SelectItem key={app.id} textValue={app.position}>
+                        <div className="flex gap-2 items-center">
+                          <div className="flex flex-col">
+                            <span className="text-small">{app.position}</span>
+                            <span className="text-tiny text-default-400">{app.company}</span>
                           </div>
-                        </SelectItem>
-                      ))}
-                    </Select>
-                  </div>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </Select>
                   <I18nProvider locale="en-GB">
-                    <DatePicker className="max-w-full" label="Select date" name="interviewDate" />
+                    <DatePicker className="w-full" label="Select date" name="interviewDate" isRequired/>
                   </I18nProvider>
-                  <TimeInput hourCycle={24} className="max-w-full" label="Select Time" name="interviewTime" />
-                </ModalBody>
-                <ModalFooter>
-                  <Button color="danger" variant="light" onPress={onClose}>
-                    Close
-                  </Button>
-                  <Button color="primary" type="submit" isLoading={loading}>
-                    Submit
-                  </Button>
-                </ModalFooter>
-              </>
-            )}
-          </ModalContent>
-        </Form>
-      </Modal>
-    </>
+                  <TimeInput hourCycle={24} className="w-full" label="Select Time" name="interviewTime" isRequired />
+                  <div className="ml-auto py-2">
+                    <Button color="danger" variant="light" onPress={onClose}>
+                      Close
+                    </Button>
+                    <Button color="primary" type="submit" isLoading={loading}>
+                      Submit
+                    </Button>
+                  </div>
+                </Form>
+              </DrawerBody>
+            </>
+          )}
+        </DrawerContent>
+      </Drawer>
   );
 }

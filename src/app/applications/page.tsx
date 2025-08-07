@@ -21,6 +21,23 @@ export default function Applications() {
 
   return (
     <div>
+      <AddApplication
+        isOpen={isOpenApplication}
+        onOpenChange={onOpenChangeApplication}
+        onApplicationAdded={() => {
+          refetch();
+        }}
+        onClose={onOpenChangeApplication}
+      />
+      <AddInterview
+        applications={applications}
+        isOpen={isOpenInterview}
+        onOpenChange={onOpenChangeInterview}
+        onInterviewAdded={() => {
+          refetch();
+        }}
+        onClose={onOpenChangeInterview}
+      />
       <div className="flex justify-between items-center py-2">
         <h1 className="text-2xl font-bold">Your job applications</h1>
         <div className="flex items-center gap-4">
@@ -86,24 +103,6 @@ export default function Applications() {
               </Card>
             ))}
       </div>
-
-      <AddApplication
-        isOpen={isOpenApplication}
-        onOpenChange={onOpenChangeApplication}
-        onApplicationAdded={() => {
-          refetch();
-        }}
-        onClose={onOpenChangeApplication}
-      />
-      <AddInterview
-        applications={applications}
-        isOpen={isOpenInterview}
-        onOpenChange={onOpenChangeInterview}
-        onInterviewAdded={() => {
-          refetch();
-        }}
-        onClose={onOpenChangeInterview}
-      />
     </div>
   );
 }
