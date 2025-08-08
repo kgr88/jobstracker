@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { Providers } from '@/providers';
+import NavigationBar from '@/components/NavigationBar';
 import './globals.css';
 
 const geistSans = Geist({
@@ -29,7 +30,8 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthProvider>
           <Providers>
-            <div className='max-w-6xl mx-auto'>{children}</div>
+            <NavigationBar></NavigationBar>
+            <div className='max-w-6xl mx-auto px-2'>{children}</div>
           </Providers>
         </AuthProvider>
       </body>

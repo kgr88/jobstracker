@@ -8,7 +8,6 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerBody,
-  DrawerFooter,
   Button,
   Input,
   Textarea,
