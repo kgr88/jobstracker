@@ -15,7 +15,7 @@ import { Application } from '../../types';
 import { I18nProvider } from '@react-aria/i18n';
 import { useAuth } from '@/contexts/AuthContext';
 import { useState } from 'react';
-import { createInterview } from '@/lib/applications';
+import { createInterview } from '@/lib/interviews';
 import { InterviewForm } from '../../types';
 import { Timestamp } from 'firebase/firestore';
 interface AddInterviewProps {

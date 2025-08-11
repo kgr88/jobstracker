@@ -14,8 +14,11 @@ export interface Application{
 
 export type ApplicationForm = Omit<Application, 'id'>
 
-export interface InterviewForm{
+export interface Interview{
+    id: string;
     applicationId: string,
     userId: string,
     interviewDate: Timestamp;
 }
+
+export type InterviewForm = Omit<Interview, 'id'>
