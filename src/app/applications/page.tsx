@@ -3,10 +3,28 @@ import { useApplications } from '@/hooks/useApplications';
 import AddApplication from '@/components/AddApplication';
 import AddInterview from '@/components/AddInterview';
 import { formatDate, getHostname } from '@/lib/utils';
-import { Button, Card, CardHeader, CardBody, CardFooter, Skeleton, useDisclosure } from '@heroui/react';
+import { Button, Card, CardHeader, CardBody, CardFooter, Skeleton, useDisclosure, Pagination } from '@heroui/react';
+import { useState, useMemo } from 'react';
 
 export default function Applications() {
   const { applications, loading, error, refetch } = useApplications();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const paginationData = useMemo(() => {
+    const totalItems = applications.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentItems = applications.slice(startIndex, endIndex);
+
+    return {
+      totalPages,
+      currentItems,
+      totalItems,
+    };
+  }, [applications, currentPage]);
+
   const {
     isOpen: isOpenApplication,
     onOpen: onOpenApplication,
@@ -51,7 +69,7 @@ export default function Applications() {
 
       <div>
         {loading
-          ? Array.from({ length: 10 }).map((_, index) => (
+          ? Array.from({ length: itemsPerPage }).map((_, index) => (
               <Card className="my-2" key={index}>
                 <CardHeader className="justify-between">
                   <div className="flex gap-5">
@@ -72,7 +90,7 @@ export default function Applications() {
                 </CardFooter>
               </Card>
             ))
-          : applications.map(app => (
+          : paginationData.currentItems.map(app => (
               <Card className="my-2" key={app.id}>
                 <CardHeader className="justify-between">
                   <div className="flex gap-5">
@@ -102,6 +120,18 @@ export default function Applications() {
               </Card>
             ))}
       </div>
+
+      {!loading && paginationData.totalPages > 1 && (
+        <div className="flex justify-center mt-6">
+          <Pagination
+            initialPage={1}
+            page={currentPage}
+            total={paginationData.totalPages}
+            onChange={setCurrentPage}
+            variant="bordered"
+          />
+        </div>
+      )}
     </div>
   );
 }
