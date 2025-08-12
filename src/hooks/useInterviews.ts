@@ -5,7 +5,7 @@ import { fetchInterviews } from '@/lib/interviews';
 import { Interview } from '../../types';
 
 export function useInterviews() {
-  const [interviews, setInterviews] = useState<Interview[]>();
+  const [interviews, setInterviews] = useState<Interview[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();

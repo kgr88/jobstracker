@@ -31,7 +31,7 @@ export default function RootLayout({
         <AuthProvider>
           <Providers>
             <NavigationBar></NavigationBar>
-            <div className='max-w-6xl mx-auto px-2'>{children}</div>
+            <div className='max-w-6xl mx-auto p-2 md:p-4'>{children}</div>
           </Providers>
         </AuthProvider>
       </body>

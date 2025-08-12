@@ -1,58 +1,28 @@
-'use client';
-import { useApplications } from '@/hooks/useApplications';
-import AddApplication from '@/components/AddApplication';
-import AddInterview from '@/components/AddInterview';
-import { formatDate, getHostname } from '@/lib/utils';
-import { Button, Card, CardHeader, CardBody, CardFooter, Skeleton, useDisclosure } from '@heroui/react';
+import { Application } from '../../../../types';
+import { Card, CardHeader, CardFooter, CardBody, Button, Skeleton } from '@heroui/react';
+import { formatDate } from '@/lib/utils';
+import { getHostname } from '@/lib/utils';
 
-export default function Applications() {
-  const { applications, loading, error, refetch } = useApplications();
-  const {
-    isOpen: isOpenApplication,
-    onOpen: onOpenApplication,
-    onOpenChange: onOpenChangeApplication,
-  } = useDisclosure();
-  const { isOpen: isOpenInterview, onOpen: onOpenInterview, onOpenChange: onOpenChangeInterview } = useDisclosure();
+interface RecentApplicationsProps {
+  applications: Application[];
+  loading: boolean;
+  onOpenApplication: () => void;
+}
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
+export default function RecentApplications({ applications, loading, onOpenApplication }: RecentApplicationsProps) {
   return (
-    <div>
-      <AddApplication
-        isOpen={isOpenApplication}
-        onOpenChange={onOpenChangeApplication}
-        onApplicationAdded={() => {
-          refetch();
-        }}
-        onClose={onOpenChangeApplication}
-      />
-      <AddInterview
-        applications={applications}
-        isOpen={isOpenInterview}
-        onOpenChange={onOpenChangeInterview}
-        onInterviewAdded={() => {
-          refetch();
-        }}
-        onClose={onOpenChangeInterview}
-      />
-      <div className="flex justify-between items-center py-2">
-        <h1 className="text-2xl font-bold">Your job applications</h1>
-        <div className="flex items-center gap-4">
-          <Button onPress={onOpenInterview} isDisabled={loading}>
-            Add Interview
-          </Button>
-          <Button onPress={onOpenApplication} isDisabled={loading}>
-            Add Application
-          </Button>
-        </div>
-      </div>
-
-      <div>
-        {loading
-          ? Array.from({ length: 10 }).map((_, index) => (
-              <Card className="my-2" key={index}>
+    <Card className="md:row-span-2 h-full flex flex-col md:order-0">
+      <CardHeader className="pb-2 ">
+        <h2 className="text-xl font-bold">Recent Applications</h2>
+        <Button onPress={onOpenApplication} isDisabled={loading} className="ml-auto">
+          Add Application
+        </Button>
+      </CardHeader>
+      <CardBody className="overflow-y-auto flex-1">
+        {loading ? (
+          <div className="space-y-3">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <Card key={index} className="h-[140px]">
                 <CardHeader className="justify-between">
                   <div className="flex gap-5">
                     <div className="flex flex-col gap-1 items-start justify-center">
@@ -71,9 +41,12 @@ export default function Applications() {
                   <Skeleton className="h-3 w-32 rounded" />
                 </CardFooter>
               </Card>
-            ))
-          : applications.map(app => (
-              <Card className="my-2" key={app.id}>
+            ))}
+          </div>
+        ) : applications.length > 0 ? (
+          <div className="space-y-3">
+            {applications.slice(0, 4).map(app => (
+              <Card key={app.id} className="h-[140px]">
                 <CardHeader className="justify-between">
                   <div className="flex gap-5">
                     <div className="flex flex-col gap-1 items-start justify-center">
@@ -101,7 +74,21 @@ export default function Applications() {
                 </CardFooter>
               </Card>
             ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center text-center h-[580px]">
+            <p className="text-default-600 mb-4">No applications yet</p>
+            <Button color="primary" onPress={onOpenApplication}>
+              Add Your First Application
+            </Button>
+          </div>
+        )}
+      </CardBody>
+      <div className="p-3">
+        <Button variant="bordered" size="lg" className="w-full" as="a" href="/applications">
+          View All Applications
+        </Button>
       </div>
-    </div>
+    </Card>
   );
 }

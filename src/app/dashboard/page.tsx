@@ -1,65 +1,63 @@
 'use client';
-import { useAuth } from '@/contexts/AuthContext';
-import { useState } from 'react';
 import { useApplications } from '@/hooks/useApplications';
+import { useInterviews } from '@/hooks/useInterviews';
 import AddApplication from '@/components/AddApplication';
-import { formatDate } from '@/lib/utils';
+import AddInterview from '@/components/AddInterview';
+import { useDisclosure } from '@heroui/react';
+import RecentApplications from './components/RecentApplications';
+import ApplicationsStats from './components/ApplicationsStats';
+import UpcomingInterviews from './components/UpcomingInterviews';
 
 export default function Dashboard() {
-  const { user, logout } = useAuth();
   const { applications, loading, error, refetch } = useApplications();
-  const [showAddApplication, setShowAddApplication] = useState(false);
+  const { interviews, loading: interviewsLoading, error: interviewsError } = useInterviews();
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const {
+    isOpen: isOpenApplication,
+    onOpen: onOpenApplication,
+    onOpenChange: onOpenChangeApplication,
+  } = useDisclosure();
+  const { isOpen: isOpenInterview, onOpen: onOpenInterview, onOpenChange: onOpenChangeInterview } = useDisclosure();
+
   if (error) {
     return <div>Error: {error}</div>;
   }
+  if (interviewsError) {
+    return <div>Error: {interviewsError}</div>;
+  }
+
   return (
     <div>
-      <div>{user?.email}</div>
-      <button onClick={logout} className="bg-red-600 text-white px-4 py-2 ">
-        Logout
-      </button>
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold">Job Applications</h1>
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => setShowAddApplication(true)}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                + Add Application
-              </button>
-              <button onClick={logout} className="bg-red-600 text-white px-4 py-2 rounded">
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-      <div>
-        <h2>Applications ({applications.length})</h2>
-        <div className="p-4 bg-gray-900 rounded-md">
-          {applications.map(app => (
-            <div key={app.id} className="bg-gray-400 rounded-sm">
-              <h3>
-                {app.position} at {app.company}
-              </h3>
-              <p>Status: {app.status}</p>
-              <p>Applied: {formatDate(app.dateApplied)}</p>
-            </div>
-          ))}
-        </div>
-      </div>
       <AddApplication
-        isOpen={showAddApplication}
-        onClose={() => setShowAddApplication(false)}
+        isOpen={isOpenApplication}
+        onOpenChange={onOpenChangeApplication}
         onApplicationAdded={() => {
-          refetch(); // Refresh applications list
+          refetch();
         }}
+        onClose={onOpenChangeApplication}
       />
+      <AddInterview
+        applications={applications}
+        isOpen={isOpenInterview}
+        onOpenChange={onOpenChangeInterview}
+        onInterviewAdded={() => {
+          refetch();
+        }}
+        onClose={onOpenChangeInterview}
+      />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 min-h-[600px]">
+        <UpcomingInterviews
+          loading={loading}
+          interviewsLoading={interviewsLoading}
+          applications={applications}
+          interviews={interviews}
+          onOpenInterview={onOpenInterview}
+        />
+        <ApplicationsStats loading={loading} applications={applications} />
+        <RecentApplications loading={loading} applications={applications} onOpenApplication={onOpenApplication} />
+        
+      </div>
     </div>
   );
 }
