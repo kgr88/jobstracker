@@ -26,9 +26,6 @@ export default function ApplicationsList({
   itemsPerPage,
   refetch,
 }: ApplicationsListProps) {
-  const handleStatusUpdate = () => {
-    refetch();
-  };
   if (loading) {
     return <ApplicationSkeletons count={itemsPerPage} />;
   }
@@ -47,7 +44,7 @@ export default function ApplicationsList({
     <>
       <div>
         {applications.map(app => (
-          <ApplicationCard key={app.id} application={app} onStatusUpdate={handleStatusUpdate} />
+          <ApplicationCard key={app.id} application={app} onStatusUpdate={refetch} onDelete={refetch} />
         ))}
       </div>
 
