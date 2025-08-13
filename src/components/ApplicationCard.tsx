@@ -27,15 +27,13 @@ export default function ApplicationCard({ application, onStatusUpdate }: Applica
 
     setIsUpdating(true);
     try {
-      onStatusUpdate?.();
       const docRef = doc(db, 'applications', application.id);
       await updateDoc(docRef, {
         status: newStatus,
-        updatedAt: new Date(),
       });
+      onStatusUpdate?.();
     } catch (error) {
       console.error('Error updating status:', error);
-      onStatusUpdate?.();
     } finally {
       setIsUpdating(false);
     }
