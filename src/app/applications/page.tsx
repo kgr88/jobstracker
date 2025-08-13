@@ -85,6 +85,7 @@ export default function Applications() {
             onPageChange={setCurrentPage}
             onClearFilters={handleClearFilters}
             itemsPerPage={itemsPerPage}
+            refetch={refetch}
           />
         </Card>
       </div>

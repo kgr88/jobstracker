@@ -12,6 +12,7 @@ interface ApplicationsListProps {
   onPageChange: (page: number) => void;
   onClearFilters: () => void;
   itemsPerPage: number;
+  refetch: () => void;
 }
 
 export default function ApplicationsList({
@@ -23,11 +24,14 @@ export default function ApplicationsList({
   onPageChange,
   onClearFilters,
   itemsPerPage,
+  refetch,
 }: ApplicationsListProps) {
+  const handleStatusUpdate = () => {
+    refetch();
+  };
   if (loading) {
     return <ApplicationSkeletons count={itemsPerPage} />;
   }
-
   if (applications.length === 0) {
     return (
       <div className="text-center py-8">
@@ -43,7 +47,7 @@ export default function ApplicationsList({
     <>
       <div>
         {applications.map(app => (
-          <ApplicationCard key={app.id} {...app} />
+          <ApplicationCard key={app.id} application={app} onStatusUpdate={handleStatusUpdate} />
         ))}
       </div>
 
