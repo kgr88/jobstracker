@@ -71,7 +71,7 @@ export default function ApplicationCard({ application, onStatusUpdate, onDelete 
 
       <CardFooter className="gap-3 justify-between pb-1">
         <div className="flex gap-3">
-          <p className="font-semibold text-default-400 text-small">{formatDate(application.dateApplied)}</p>
+          <p className="font-semibold text-default-400 text-small">{formatDate(application.dateApplied).date}</p>
           <a href={application.postingUrl} className="text-default-400 text-small underline">
             {getHostname(application.postingUrl)}
           </a>

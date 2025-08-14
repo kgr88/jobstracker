@@ -58,7 +58,9 @@ export default function UpcomingInterviews({
                     <div key={interview.id} className="p-3 bg-default-100 rounded-lg">
                       <h3 className="font-semibold text-sm">{app?.position || 'Unknown Position'}</h3>
                       <p className="text-xs text-default-600">{app?.company || 'Unknown Company'}</p>
-                      <p className="text-xs text-default-500">{formatDate(interview.interviewDate)}</p>
+                      <p className="text-xs text-default-500">
+                        {formatDate(interview.interviewDate).date} at {formatDate(interview.interviewDate).time}
+                      </p>
                     </div>
                   );
                 })
