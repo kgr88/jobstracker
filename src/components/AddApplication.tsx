@@ -61,7 +61,7 @@ export default function AddApplication({ isOpen, onOpenChange, onApplicationAdde
 
   return (
     <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
-      <DrawerContent className="w-full">
+      <DrawerContent className="w-full bg-background">
         {onClose => (
           <>
             <DrawerHeader>Add Application</DrawerHeader>

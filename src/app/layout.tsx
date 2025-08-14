@@ -25,11 +25,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
           <NavigationBar></NavigationBar>
-          <div className="max-w-6xl mx-auto p-2 md:p-4">{children}</div>
+          <div className="max-w-6xl mx-auto p-2 md:p-4 ">{children}</div>
         </Providers>
       </body>
     </html>

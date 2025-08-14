@@ -63,7 +63,7 @@ export default function AddInterview({
   };
   return (
       <Drawer isOpen={isOpen} onOpenChange={onOpenChange} >
-        <DrawerContent>
+        <DrawerContent className='bg-background'>
           {onClose => (
             <>
               <DrawerHeader className="flex flex-col gap-1">Add Interview</DrawerHeader>

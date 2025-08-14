@@ -2,6 +2,7 @@ import { Application } from '../../../../types';
 import { Card, CardHeader, CardBody, Button } from '@heroui/react';
 import ApplicationCard from '@/components/ApplicationCard';
 import ApplicationSkeletons from '@/components/ApplicationsSkeleton';
+import { PlusIcon } from '@heroicons/react/24/outline';
 
 interface RecentApplicationsProps {
   applications: Application[];
@@ -27,10 +28,11 @@ export default function RecentApplications({
   };
 
   return (
-    <Card className="md:row-span-2 h-full flex flex-col md:order-0">
+    <Card className="md:row-span-2 h-full flex flex-col md:order-0 bg-background border-default-100 border-1">
       <CardHeader className="pb-2">
         <h2 className="text-xl font-bold">Recent Applications</h2>
-        <Button onPress={onOpenApplication} isDisabled={loading} className="ml-auto">
+        <Button onPress={onOpenApplication} isDisabled={loading} variant="bordered" className='ml-auto'>
+          <PlusIcon className="text-default-600 size-5" />
           Add Application
         </Button>
       </CardHeader>

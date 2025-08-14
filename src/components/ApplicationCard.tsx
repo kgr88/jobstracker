@@ -39,7 +39,7 @@ export default function ApplicationCard({ application, onStatusUpdate, onDelete 
   };
 
   return (
-    <Card className="my-2 ">
+    <Card className="my-2 bg-background border-default-100 border-1">
       <CardHeader className="justify-between items-start">
         <div className="flex gap-5">
           <div className="flex flex-col gap-1 items-start justify-center">
@@ -57,7 +57,8 @@ export default function ApplicationCard({ application, onStatusUpdate, onDelete 
             className="w-28 text-center"
             variant="bordered"
             radius="full"
-            placeholder="Status">
+            placeholder="Status"
+            aria-label="Application status">
             {statusOptions.map(status => (
               <SelectItem key={status.key}>{status.label}</SelectItem>
             ))}

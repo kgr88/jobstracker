@@ -19,12 +19,12 @@ export default function UpcomingInterviews({
 }: UpcomingInterviewsProps) {
   return (
     <Card
-      className="h-full min-h-[280px] md:order-2 flex flex-col"
+      className="h-full min-h-[280px] md:order-2 flex flex-col bg-background border-default-100 border-1"
       classNames={{
         base: 'flex flex-col h-full',
         body: 'overflow-auto max-h-72 flex-1',
       }}>
-      <CardHeader className="pb-2">
+      <CardHeader className="pb-2 ">
         <h2 className="text-lg font-semibold">Upcoming Interviews</h2>
       </CardHeader>
       <CardBody className="overflow-y-auto">
@@ -55,7 +55,7 @@ export default function UpcomingInterviews({
                 upcomingInterviews.map(interview => {
                   const app = applications.find(a => a.id === interview.applicationId);
                   return (
-                    <div key={interview.id} className="p-3 bg-default-100 rounded-lg">
+                    <div key={interview.id} className="p-3 rounded-lg bg-background border-default-200 dark:border-default-100 border-1">
                       <h3 className="font-semibold text-sm">{app?.position || 'Unknown Position'}</h3>
                       <p className="text-xs text-default-600">{app?.company || 'Unknown Company'}</p>
                       <p className="text-xs text-default-500">

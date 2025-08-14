@@ -70,7 +70,7 @@ export default function Applications() {
           }}
           onClose={onOpenChangeInterview}
         />
-        <Card className="p-4" radius="sm">
+        <Card className="p-4 bg-background border-default-100 border-1" radius="sm">
           <ApplicationsHeader
             onOpenApplication={onOpenApplication}
             onOpenInterview={onOpenInterview}
