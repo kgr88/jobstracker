@@ -1,42 +1,39 @@
 import { useState } from 'react';
-import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 import { addToast } from '@heroui/react';
+import { useAuth } from '@/contexts/AuthContext';
+import { deleteApplication, updateApplicationStatus } from '@/lib/applications';
 
 export function useApplicationActions(applicationId: string) {
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { user } = useAuth();
 
   const updateStatus = async (newStatus: string, onSuccess?: () => void) => {
+    if (!user) return false;
     setIsUpdating(true);
     try {
-      const docRef = doc(db, 'applications', applicationId);
-      await updateDoc(docRef, { status: newStatus });
+      await updateApplicationStatus(applicationId, newStatus);
       onSuccess?.();
-      return true;
     } catch (error) {
       console.error('Error updating status:', error);
-      return false;
     } finally {
       setIsUpdating(false);
     }
   };
 
-  const deleteApplication = async (onSuccess?: () => void) => {
+  const handleDeleteApplication = async (onSuccess?: () => void) => {
+    if (!user) return false;
     setIsDeleting(true);
     try {
-      const docRef = doc(db, 'applications', applicationId);
-      await deleteDoc(docRef);
+      await deleteApplication(applicationId, user.uid);
       onSuccess?.();
       addToast({
         title: 'Operation Successful',
         description: 'Application has been deleted.',
-        timeout: 2000
+        timeout: 2000,
       });
-      return true;
     } catch (error) {
       console.error('Error deleting application:', error);
-      return false;
     } finally {
       setIsDeleting(false);
     }
@@ -46,6 +43,6 @@ export function useApplicationActions(applicationId: string) {
     isUpdating,
     isDeleting,
     updateStatus,
-    deleteApplication,
+    deleteApplication: handleDeleteApplication,
   };
 }

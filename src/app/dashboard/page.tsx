@@ -9,8 +9,13 @@ import ApplicationsStats from './components/ApplicationsStats';
 import UpcomingInterviews from './components/UpcomingInterviews';
 
 export default function Dashboard() {
-  const { applications, loading, error, refetch } = useApplications();
-  const { interviews, loading: interviewsLoading, error: interviewsError } = useInterviews();
+  const { applications, loading, error, refetch: applicationsRefetch } = useApplications();
+  const {
+    interviews,
+    loading: interviewsLoading,
+    error: interviewsError,
+    refetch: interviewsRefetch,
+  } = useInterviews();
 
   const {
     isOpen: isOpenApplication,
@@ -26,23 +31,24 @@ export default function Dashboard() {
     return <div>Error: {interviewsError}</div>;
   }
 
+  const handleUpdate = () => {
+    interviewsRefetch();
+    applicationsRefetch();
+  };
+
   return (
     <div>
       <AddApplication
         isOpen={isOpenApplication}
         onOpenChange={onOpenChangeApplication}
-        onApplicationAdded={() => {
-          refetch();
-        }}
+        onApplicationAdded={applicationsRefetch}
         onClose={onOpenChangeApplication}
       />
       <AddInterview
         applications={applications}
         isOpen={isOpenInterview}
         onOpenChange={onOpenChangeInterview}
-        onInterviewAdded={() => {
-          refetch();
-        }}
+        onInterviewAdded={interviewsRefetch}
         onClose={onOpenChangeInterview}
       />
 
@@ -55,8 +61,12 @@ export default function Dashboard() {
           onOpenInterview={onOpenInterview}
         />
         <ApplicationsStats loading={loading} applications={applications} />
-        <RecentApplications loading={loading} applications={applications} onOpenApplication={onOpenApplication} />
-        
+        <RecentApplications
+          applications={applications}
+          loading={loading}
+          onOpenApplication={onOpenApplication}
+          onApplicationUpdate={handleUpdate}
+        />
       </div>
     </div>
   );
