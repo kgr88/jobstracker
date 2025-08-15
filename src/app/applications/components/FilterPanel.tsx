@@ -53,6 +53,7 @@ export default function FilterPanel({
           <label className="text-sm font-medium mb-2 block">Filter by Status</label>
           <Select
             size="sm"
+            aria-label="Application status filter"
             selectedKeys={[selectedStatus]}
             onSelectionChange={keys => onStatusFilter(Array.from(keys)[0] as string)}>
             {statusOptions.map(status => (
@@ -65,6 +66,7 @@ export default function FilterPanel({
           <label className="text-sm font-medium mb-2 block">Sort by Date</label>
           <Select
             size="sm"
+            aria-label="Application date sort"
             selectedKeys={[sortOrder]}
             onSelectionChange={keys => onSortChange(Array.from(keys)[0] as 'asc' | 'desc')}>
             <SelectItem key="desc">Newest</SelectItem>
