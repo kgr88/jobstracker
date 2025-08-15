@@ -2,69 +2,148 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
+import { Input, Button, Form, addToast } from '@heroui/react';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const { signIn } = useAuth();
+  const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { signIn, logInWithGoogle } = useAuth();
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const toggleVisibility = () => setIsVisible(!isVisible);
+
+  const handleGoogleLogin = async () => {
+    try {
+      await logInWithGoogle();
+      router.push('/dashboard');
+    } catch (error) {
+      let message = 'Unknown Error';
+      if (error instanceof Error) message = error.message;
+      else message = String(error);
+      addToast({
+        title: 'Error logging in',
+        description: `${message}`,
+        color: 'danger',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    const formData = Object.fromEntries(new FormData(e.currentTarget as HTMLFormElement));
+    setEmail(formData.email as string);
+    setPassword(formData.password as string);
+    setIsLoading(true);
 
     try {
       await signIn(email, password);
       router.push('/dashboard');
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'An error occured');
+      let message = 'Unknown Error';
+      if (error instanceof Error) message = error.message;
+      else message = String(error);
+      addToast({
+        title: 'Error logging in',
+        description: `${message}`,
+        color: 'danger',
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6 text-center">Sign In</h2>
-      {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-            Email
-          </label>
-          <input
+    <div className="flex flex-col gap-3 justify-center items-center p-4">
+      <div className="flex flex-col">
+        <h1 className="text-2xl font-bold text-center">Welcome Back!</h1>
+        <p className="text-small text-default-500 text-center">Sign in to your account</p>
+      </div>
+
+      <div className="w-full max-w-sm space-y-6">
+        <Form onSubmit={onSubmit} className="space-y-6">
+          <Input
             type="email"
-            id="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            name="email"
+            placeholder="Enter email"
+            isRequired
+            variant="bordered"
+            color="primary"
+            size="lg"
+            errorMessage={({ validationDetails, validationErrors }) => {
+              if (validationDetails.typeMismatch || validationDetails.valueMissing) {
+                return 'Please enter a valid email address';
+              }
+              return validationErrors;
+            }}
           />
-        </div>
-
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+          <Input
+            placeholder="Enter password"
+            name="password"
+            isRequired
+            variant="bordered"
+            color="primary"
+            size="lg"
+            endContent={
+              <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
+                {isVisible ? (
+                  <EyeSlashIcon className="h-5 w-5 text-default-400 pointer-events-none" />
+                ) : (
+                  <EyeIcon className="h-5 w-5 text-default-400 pointer-events-none" />
+                )}
+              </button>
+            }
+            type={isVisible ? 'text' : 'password'}
+            errorMessage={({ validationDetails, validationErrors }) => {
+              if (validationDetails.typeMismatch || validationDetails.valueMissing) {
+                return 'Please enter a password.';
+              }
+              return validationErrors;
+            }}
           />
-        </div>
 
-        <button type="submit" className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
-          Sign In
-        </button>
-      </form>
-      <p className="mt-4 text-center text-sm text-gray-600">
-        Don&apos;t have an account?{' '}
-        <a href="/register" className="text-blue-600 hover:underline">
-          Sign Up
-        </a>
-      </p>
+          <Button
+            type="submit"
+            color="primary"
+            size="lg"
+            radius="full"
+            className="w-full"
+            disabled={isLoading}
+            isLoading={isLoading}>
+            {isLoading ? 'Signing In...' : 'Sign In'}
+          </Button>
+        </Form>
+
+        <div className="flex items-center w-full my-4">
+          <div className="flex-grow border-t border-default-300"></div>
+          <span className="mx-4 text-default-500">or</span>
+          <div className="flex-grow border-t border-default-300"></div>
+        </div>
+        <Button
+          type="submit"
+          size="lg"
+          radius="full"
+          className="w-full bg-foreground text-default-100"
+          disabled={isLoading}
+          isLoading={isLoading}
+          onPress={handleGoogleLogin}>
+          <Image src="/google-icon.svg" alt="google icon" width={32} height={32} />
+          {isLoading ? 'Signing In...' : 'Sign In With Google'}
+        </Button>
+
+        <div className="text-center text-small">
+          <span className="text-default-500">Don&apos;t have an account? </span>
+          <Link href="/register" className="text-primary-600 hover:text-primary-500 font-medium">
+            Sign Up
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }
