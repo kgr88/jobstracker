@@ -48,7 +48,7 @@ export default function Dashboard() {
         applications={applications}
         isOpen={isOpenInterview}
         onOpenChange={onOpenChangeInterview}
-        onInterviewAdded={interviewsRefetch}
+        onInterviewAdded={handleUpdate}
         onClose={onOpenChangeInterview}
       />
 
