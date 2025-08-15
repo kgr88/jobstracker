@@ -25,7 +25,7 @@ export default function NavigationBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <Navbar isBordered onMenuOpenChange={setIsMenuOpen} className='bg-opacity-40'>
+    <Navbar isBordered onMenuOpenChange={setIsMenuOpen} className="bg-opacity-40">
       <NavbarContent className="sm:hidden" justify="start">
         <NavbarMenuToggle aria-label={isMenuOpen ? 'Close menu' : 'Open menu'} />
       </NavbarContent>
@@ -60,12 +60,16 @@ export default function NavigationBar() {
 
       {/* user menu */}
       <NavbarContent justify="end">
-        <NavbarItem className="hidden sm:flex">
+        <NavbarItem>
           <ThemeSwitcher />
+        </NavbarItem>
+        <NavbarItem className="hidden sm:flex">
           <Popover placement="bottom-end">
             <PopoverTrigger color="foreground" radius="full">
-              <Button isIconOnly>
-                <UserIcon className="size-10 border-1 border-default-200 rounded-full p-2 hover:opacity-80 text-default-500" />
+              <Button
+                isIconOnly
+                className="size-10 border-1 border-default-200 rounded-full p-2 hover:opacity-80 text-default-500">
+                <UserIcon />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-48 p-0">

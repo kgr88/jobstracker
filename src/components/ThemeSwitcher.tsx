@@ -2,7 +2,8 @@
 
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import { SunIcon } from '@heroicons/react/24/outline';
+import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
+import { Button } from '@heroui/react';
 
 export function ThemeSwitcher() {
   const [mounted, setMounted] = useState(false);
@@ -15,10 +16,18 @@ export function ThemeSwitcher() {
   if (!mounted) return null;
 
   return (
-    <div>
-      <button onClick={() => (theme == 'dark' ? setTheme('light') : setTheme('dark'))}>
-        <SunIcon className="size-10 border-1 border-default-200 rounded-full p-2 hover:opacity-80 text-default-500 mx-2" />
-      </button>
-    </div>
+    <Button 
+      isIconOnly 
+      onPress={() => (theme == 'dark' ? setTheme('light') : setTheme('dark'))}
+      variant="bordered" 
+      radius="full"
+      className="hover:opacity-80 border-1 border-default-200 text-default-500"
+    >
+      {theme === 'dark' ? (
+        <SunIcon className="size-5" /> 
+      ) : (
+        <MoonIcon className="size-5" />
+      )}
+    </Button>
   );
 }
