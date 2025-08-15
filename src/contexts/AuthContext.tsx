@@ -6,6 +6,8 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 
@@ -14,6 +16,7 @@ interface AuthContextType {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
+  logInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -54,6 +57,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     await createUserWithEmailAndPassword(auth, email, password);
   };
 
+  const logInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+  };
+
   const logout = async () => {
     try {
       document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
@@ -69,6 +77,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     loading,
     signIn,
     signUp,
+    logInWithGoogle,
     logout,
   };
 
