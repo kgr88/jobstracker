@@ -8,8 +8,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export default function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { signIn, logInWithGoogle } = useAuth();
@@ -18,6 +16,7 @@ export default function LoginForm() {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const handleGoogleLogin = async () => {
+    setIsLoading(true);
     try {
       await logInWithGoogle();
       router.push('/dashboard');
@@ -38,10 +37,9 @@ export default function LoginForm() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = Object.fromEntries(new FormData(e.currentTarget as HTMLFormElement));
-    setEmail(formData.email as string);
-    setPassword(formData.password as string);
+    const email = formData.email as string;
+    const password = formData.password as string;
     setIsLoading(true);
-
     try {
       await signIn(email, password);
       router.push('/dashboard');
