@@ -110,7 +110,7 @@ export default function NavigationBar() {
               </Link>
             </NavbarMenuItem>
             <NavbarMenuItem>
-              <Link className="w-full" color="danger" href="/applications" size="lg" onPress={logout}>
+              <Link className="w-full mt-8 font-semibold" color="danger" href="/applications" size="lg" onPress={logout}>
                 Log Out
               </Link>
             </NavbarMenuItem>
