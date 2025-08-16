@@ -32,7 +32,7 @@ export default function RecentApplications({
       <CardHeader className="pb-2">
         <h2 className="text-xl font-bold">Recent Applications</h2>
         <Button onPress={onOpenApplication} isDisabled={loading} variant="bordered" className='ml-auto'>
-          <PlusIcon className="text-default-600 size-5" />
+          <PlusIcon className="text-default-600 size-5 min-h-4 min-w-4" />
           Add Application
         </Button>
       </CardHeader>
