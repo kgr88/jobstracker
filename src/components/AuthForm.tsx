@@ -21,7 +21,6 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const title = isLogin ? 'Welcome Back!' : 'Sign Up';
   const subtitle = isLogin ? 'Sign in to your account' : '';
   const submitText = isLogin ? 'Sign In' : 'Sign Up';
-  const redirectPath = isLogin ? '/dashboard' : '/login';
   const linkText = isLogin ? "Don't have an account?" : 'Already have an account?';
   const linkHref = isLogin ? '/register' : '/login';
   const linkLabel = isLogin ? 'Sign Up' : 'Sign In';
@@ -60,7 +59,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
       } else {
         await signUp(email, password);
       }
-      router.push(redirectPath);
+      router.push("/dashboard");
     } catch (error) {
       let message = 'Unknown Error';
       if (error instanceof Error) message = error.message;
